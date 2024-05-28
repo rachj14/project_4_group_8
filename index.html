@@ -1,0 +1,215 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Heart Disease Predictor</title>
+    <link href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" rel="stylesheet">
+    <script>
+        function calculateBMI() {
+            var weight = parseFloat(document.getElementById('weight').value);
+            var height = parseFloat(document.getElementById('height').value) / 100; // Convert cm to meters
+            if (!isNaN(weight) && !isNaN(height) && height > 0) {
+                var bmi = weight / (height * height);
+                document.getElementById('BMI').value = bmi.toFixed(1);
+            }
+        }
+
+        function submitForm(event) {
+            event.preventDefault();
+            var form = document.getElementById('prediction-form');
+            var formData = new FormData(form);
+
+            fetch('/predict', {
+                method: 'POST',
+                body: formData
+            })
+            .then(response => response.json())
+            .then(data => {
+                document.getElementById('prediction-result').innerText = `Prediction: ${data.prediction}`;
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                document.getElementById('prediction-result').innerText = 'Error occurred during prediction';
+            });
+        }
+    </script>
+</head>
+<body>
+    <div class="container">
+        <h1 class="mt-5">Heart Disease Predictor</h1>
+        <form id="prediction-form" onsubmit="submitForm(event)">
+            <div class="form-group">
+                <label for="HighBP">High Blood Pressure</label>
+                <small class="form-text text-muted">Have you been told by a health professional that you have High Blood Pressure?</small>
+                <select class="form-control" id="HighBP" name="HighBP">
+                    <option value="1">Yes</option>
+                    <option value="0">No</option>
+                </select>
+            </div>
+            <div class="form-group">
+                <label for="HighChol">High Blood Cholesterol</label>
+                <small class="form-text text-muted">Have you been told by a health professional that you have High Blood Cholesterol?</small>
+                <select class="form-control" id="HighChol" name="HighChol">
+                    <option value="1">Yes</option>
+                    <option value="0">No</option>
+                </select>
+            </div>
+            <div class="form-group">
+                <label for="CholCheck">Cholesterol Check</label>
+                <small class="form-text text-muted">Have you had your cholesterol levels checked within the last 5 years?</small>
+                <select class="form-control" id="CholCheck" name="CholCheck">
+                    <option value="1">Yes</option>
+                    <option value="0">No</option>
+                </select>
+            </div>
+            <div class="form-group">
+                <label for="weight">Weight (kg)</label>
+                <small class="form-text text-muted">Enter your weight in kilograms.</small>
+                <input type="number" class="form-control" id="weight" step="0.1" onchange="calculateBMI()">
+            </div>
+            <div class="form-group">
+                <label for="height">Height (cm)</label>
+                <small class="form-text text-muted">Enter your height in centimeters.</small>
+                <input type="number" class="form-control" id="height" step="0.1" onchange="calculateBMI()">
+            </div>
+            <div class="form-group">
+                <label for="BMI">Body Mass Index (BMI)</label>
+                <small class="form-text text-muted">Your Body Mass Index (BMI) will be calculated automatically.</small>
+                <input type="number" class="form-control" id="BMI" name="BMI" step="0.1" readonly>
+            </div>
+            <div class="form-group">
+                <label for="Smoker">Smoker</label>
+                <small class="form-text text-muted">Have you smoked at least 100 cigarettes in your lifetime?</small>
+                <select class="form-control" id="Smoker" name="Smoker">
+                    <option value="1">Yes</option>
+                    <option value="0">No</option>
+                </select>
+            </div>
+            <div class="form-group">
+                <label for="Stroke">History of Stroke</label>
+                <small class="form-text text-muted">Do you have a history of stroke?</small>
+                <select class="form-control" id="Stroke" name="Stroke">
+                    <option value="1">Yes</option>
+                    <option value="0">No</option>
+                </select>
+            </div>
+            <div class="form-group">
+                <label for="Diabetes">Diabetes</label>
+                <small class="form-text text-muted">Do you have a history of diabetes, or currently in pre-diabetes, or suffer from either type of diabetes?</small>
+                <select class="form-control" id="Diabetes" name="Diabetes">
+                    <option value="1">Yes</option>
+                    <option value="0">No</option>
+                </select>
+            </div>
+            <div class="form-group">
+                <label for="PhysActivity">Physical Activity</label>
+                <small class="form-text text-muted">Do you have some form of physical activity in your day-to-day routine?</small>
+                <select class="form-control" id="PhysActivity" name="PhysActivity">
+                    <option value="1">Yes</option>
+                    <option value="0">No</option>
+                </select>
+            </div>
+            <div class="form-group">
+                <label for="Fruits">Fruits Consumption</label>
+                <small class="form-text text-muted">Do you consume 1 or more fruit(s) daily?</small>
+                <select class="form-control" id="Fruits" name="Fruits">
+                    <option value="1">Yes</option>
+                    <option value="0">No</option>
+                </select>
+            </div>
+            <div class="form-group">
+                <label for="Veggies">Vegetables Consumption</label>
+                <small class="form-text text-muted">Do you consume 1 or more vegetable(s) daily?</small>
+                <select class="form-control" id="Veggies" name="Veggies">
+                    <option value="1">Yes</option>
+                    <option value="0">No</option>
+                </select>
+            </div>
+            <div class="form-group">
+                <label for="HvyAlcoholConsump">Heavy Alcohol Consumption</label>
+                <small class="form-text text-muted">Do you consume more than 14 drinks per week?</small>
+                <select class="form-control" id="HvyAlcoholConsump" name="HvyAlcoholConsump">
+                    <option value="1">Yes</option>
+                    <option value="0">No</option>
+                </select>
+            </div>
+            <div class="form-group">
+                <label for="GenHlth">General Health</label>
+                <small class="form-text text-muted">How would you rate your general health?</small>
+                <select class="form-control" id="GenHlth" name="GenHlth">
+                    <option value="1">Excellent</option>
+                    <option value="2">Very Good</option>
+                    <option value="3">Good</option>
+                    <option value="4">Fair</option>
+                    <option value="5">Poor</option>
+                </select>
+            </div>
+            <div class="form-group">
+                <label for="MentHlth">Bad Mental Health Days</label>
+                <small class="form-text text-muted">In the past 30 days, how many days did you have bad mental health?</small>
+                <input type="number" class="form-control" id="MentHlth" name="MentHlth" min="0" max="30">
+            </div>
+            <div class="form-group">
+                <label for="PhysHlth">Bad Physical Health Days</label>
+                <small class="form-text text-muted">In the past 30 days, how many days did you have bad physical health?</small>
+                <input type="number" class="form-control" id="PhysHlth" name="PhysHlth" min="0" max="30">
+            </div>
+            <div class="form-group">
+                <label for="DiffWalk">Difficulty Walking</label>
+                <small class="form-text text-muted">Do you have difficulty walking or climbing stairs?</small>
+                <select class="form-control" id="DiffWalk" name="DiffWalk">
+                    <option value="1">Yes</option>
+                    <option value="0">No</option>
+                </select>
+            </div>
+            <div class="form-group">
+                <label for="Sex">Gender</label>
+                <small class="form-text text-muted">Select your gender.</small>
+                <select class="form-control" id="Sex" name="Sex">
+                    <option value="1">Male</option>
+                    <option value="0">Female</option>
+                </select>
+            </div>
+            <div class="form-group">
+                <label for="Age">Age Category</label>
+                <small class="form-text text-muted">Select your age category.</small>
+                <select class="form-control" id="Age" name="Age">
+                    <option value="1">18-24 years</option>
+                    <option value="2">25-29 years</option>
+                    <option value="3">30-34 years</option>
+                    <option value="4">35-39 years</option>
+                    <option value="5">40-44 years</option>
+                    <option value="6">45-49 years</option>
+                    <option value="7">50-54 years</option>
+                    <option value="8">55-59 years</option>
+                    <option value="9">60-64 years</option>
+                    <option value="10">65-69 years</option>
+                    <option value="11">70-74 years</option>
+                    <option value="12">75-79 years</option>
+                    <option value="13">80 years or older</option>
+                </select>
+            </div>
+            <div class="form-group">
+                <label for="Education">Education Level</label>
+                <small class="form-text text-muted">Select the highest year of school you have completed.</small>
+                <select class="form-control" id="Education" name="Education">
+                    <option value="0">Never attended or kindergarten only</option>
+                    <option value="1">Completed primary school</option>
+                    <option value="2">Completed secondary school Year 7 to Year 10</option>
+                    <option value="3">Completed senior secondary school Year 11 to Year 12</option>
+                    <option value="4">Completed some form of post-secondary education or vocational training</option>
+                    <option value="5">Completed some college or trade school</option>
+                    <option value="6">Completed Bachelor's degree or higher.</option>
+                </select>
+            </div>
+            <button type="submit" class="btn btn-primary">Predict</button>
+        </form>
+        <h2 id="prediction-result" class="mt-4"></h2>
+        <img src="static/feature_importances.png" class="mt-4">
+    </div>
+    <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.11.0/umd/popper.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js"></script>
+</body>
+</html>
